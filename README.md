@@ -9,7 +9,7 @@ Program that is able to generate a Huffman tree, retrieve character encodings, a
 
 # Building Program
 - Clone repository
-  - `git clone https://"Git Username":"Git Auth token"/Bradley-Sullivan/HuffmanEncoder-Decoder.git`
+  - `git clone https://github.com/Bradley-Sullivan/HuffmanEncoder-Decoder.git`
 - Navigate to cloned directory
 - Execute `make`
 - Execute `./huff` to run program
