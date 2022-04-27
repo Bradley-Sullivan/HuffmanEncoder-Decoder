@@ -1,3 +1,14 @@
+/**
+ * @file huffmanCoding.cpp
+ * @author Bradley Sullivan (bradleysullivan@nevada.unr.edu)
+ * @brief Huffman coding implementation. Programmed cuz I was bored and wanted to learn how to do it I guess.
+ * @version 0.1
+ * @date 2022-04-27
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
+
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -237,7 +248,7 @@ void printTree(ArrayMinHeap<HuffNode> nodeHeap, HuffNode* root, int depth) {
     } else {
         printf("%c  %d (", root->getChar(), root->getFreqSum());
         std::string s = encodeCharacter(root->getChar(), nodeHeap);
-        for (int i = s.length() - 1; i >= 0; i--) std::cout << s[i];
+        for (int i = s.length() - 1; i >= 0; i--) std::cout << s[i];        // String library really needs a printStringInReverse function ffs
         printf(")\n");
     }
     printTree(nodeHeap, root->getLeft(), depth + 1);
