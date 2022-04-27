@@ -12,6 +12,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <algorithm>
 #include "arrayMinHeap.h"
 #include "huffNode.h"
 
@@ -21,7 +22,7 @@ int** evaluateCharFreq(int numDistinct, std::string str, int charBuffer[]);
 void buildHuffTree(int numDistinct, int** charFreq, ArrayMinHeap<HuffNode>& nodeHeap);
 std::string encodeCharacter(char c, ArrayMinHeap<HuffNode> nodeHeap);
 bool buildEncodingMap(char c, HuffNode* root, std::stringstream& encodingMap);
-char decodeCharacter(std::string& encoding, HuffNode* root);
+char decodeCharacter(std::string& encoding, int& cFreq, HuffNode* root);
 int evaluateBitDepth(std::string input, ArrayMinHeap<HuffNode> nodeHeap);
 void printTree(ArrayMinHeap<HuffNode> nodeHeap, HuffNode* root, int depth);
 
@@ -63,11 +64,12 @@ int main(void) {
     } while (c != 27);
 
     do {
+        int cFreq;
         rootPtr = new HuffNode(heap.peekTop());
         std::cout << "\nEnter a single bit-string to decode (press ESC then ENTER to exit): ";
         std::cin >> encoding;
         if (encoding[0] != 27) {
-            try { c = decodeCharacter(encoding, rootPtr); }
+            try { c = decodeCharacter(encoding, cFreq, rootPtr); }
             catch (const char* msg) { std::cout << msg << std::endl; }
             std::cout << "Decoded: " << c << std::endl;
         }
@@ -191,7 +193,7 @@ bool buildEncodingMap(char c, HuffNode* root, std::stringstream& encodingMap) {
     }    
 }
 
-char decodeCharacter(std::string& encoding, HuffNode* root) {
+char decodeCharacter(std::string& encoding, int& cFreq, HuffNode* root) {
     for (int i = 0; i < (int)encoding.length() && root != nullptr; i++) {
         if (encoding[i] == '0') {
             root = root->getLeft();
@@ -201,6 +203,7 @@ char decodeCharacter(std::string& encoding, HuffNode* root) {
     }
 
     if (root != nullptr) {
+        cFreq = root->getFreqSum();
         return root->getChar();
     } else {
         throw std::runtime_error("Error: Invalid character encoding string");
@@ -209,13 +212,16 @@ char decodeCharacter(std::string& encoding, HuffNode* root) {
 
 int evaluateBitDepth(std::string input, ArrayMinHeap<HuffNode> nodeHeap) {
     // Character buffer and getDistinctChar call is sloppy but I'm tired as fuck rn
+    int bitDepth = 0, freq;
     int buf[256];
     int numDistinctChars = getDistinctChars(input, buf);
-    int bitDepth = 0;
+    HuffNode* root(new HuffNode(nodeHeap.peekTop()));
     std::string encoding;
     for (int i = 0; i < numDistinctChars; i++) {
         encoding = encodeCharacter(buf[i], nodeHeap);
-        bitDepth += (int)encoding.length();
+        std::reverse(encoding.begin(), encoding.end());
+        decodeCharacter(encoding, freq, root);
+        bitDepth += (int)encoding.length() * freq;
         encoding.clear();
     }
 
