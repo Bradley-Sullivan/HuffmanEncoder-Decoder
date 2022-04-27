@@ -23,7 +23,6 @@ std::string encodeCharacter(char c, ArrayMinHeap<HuffNode> nodeHeap);
 bool buildEncodingMap(char c, HuffNode* root, std::stringstream& encodingMap);
 char decodeCharacter(std::string& encoding, HuffNode* root);
 int evaluateBitDepth(std::string input, ArrayMinHeap<HuffNode> nodeHeap);
-void displayTree(HuffNode* root);
 void printTree(ArrayMinHeap<HuffNode> nodeHeap, HuffNode* root, int depth);
 
 int main(void) {
@@ -65,7 +64,7 @@ int main(void) {
 
     do {
         rootPtr = new HuffNode(heap.peekTop());
-        std::cout << "\nEnter a string to decode (press ESC then ENTER to exit): ";
+        std::cout << "\nEnter a single bit-string to decode (press ESC then ENTER to exit): ";
         std::cin >> encoding;
         if (encoding[0] != 27) {
             try { c = decodeCharacter(encoding, rootPtr); }
@@ -223,14 +222,6 @@ int evaluateBitDepth(std::string input, ArrayMinHeap<HuffNode> nodeHeap) {
     return bitDepth;
 }
 
-void displayTree(HuffNode* root) {
-    if (root != nullptr) {
-        if (root->getChar() != '\0') std::cout << root->getChar() << " " << root->getFreqSum() << std::endl;
-        displayTree(root->getLeft());
-        displayTree(root->getRight());
-    }
-}
-
 void printTree(ArrayMinHeap<HuffNode> nodeHeap, HuffNode* root, int depth) {
     if (root == nullptr) {
         return;
@@ -238,9 +229,9 @@ void printTree(ArrayMinHeap<HuffNode> nodeHeap, HuffNode* root, int depth) {
 
     for (int i = 0; i < depth; i++) {
         if (i == depth - 1) {
-            std::cout << "--|";
+            std::cout << "---|";
         } else {
-            std::cout << " ";
+            std::cout << "--- ";
         }
     }
     if (root->getChar() == '\0') {
